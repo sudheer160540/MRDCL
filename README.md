@@ -103,3 +103,4 @@ This reads the corresponding layer files referenced by `J:\589q.qgz`; it never e
 - Keep `database/mrdcl-surveys.db` private. It contains household survey information and must not be placed in a shared web folder.
 - The questionnaire data and audit log are new application data. The source shapefile remains a read-only baseline.
 "# MRDCL" 
+"# MRDCL" 
