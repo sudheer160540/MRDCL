@@ -1,0 +1,12 @@
+{
+  "name": "MRDCL Household Survey Portal",
+  "short_name": "MRDCL Survey",
+  "description": "Shared household survey and verification register.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7fafc",
+  "theme_color": "#102a43",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

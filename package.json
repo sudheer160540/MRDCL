@@ -1,0 +1,16 @@
+{
+  "name": "mrdcl-household-survey-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared household survey and map portal for MRDCL",
+  "scripts": {
+    "start": "node server.js",
+    "import:households": "python scripts/import_shapefile.py",
+    "import:map-layers": "python scripts/import_qgis_layers.py",
+    "import:bifurcated": "python scripts/import_bifurcated_layer.py",
+    "reset:password": "node scripts/reset_password.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

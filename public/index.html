@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a43">
+  <title>MRDCL Household Survey Portal</title>
+  <link rel="manifest" href="/manifest.webmanifest?v=20">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/styles.css?v=20">
+  <link rel="stylesheet" href="/map-shell.css?v=9">
+</head>
+<body>
+  <main id="loginView" class="login-view">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="brand-mark">M</div>
+      <p class="eyebrow">MRDCL · SHARED FIELDWORK</p>
+      <h1 id="loginTitle">Household Survey Portal</h1>
+      <p class="login-copy">One controlled register for mapping, household questionnaires, and verification.</p>
+      <form id="loginForm" class="login-form">
+        <label>User ID<input id="username" name="username" autocomplete="username" required></label>
+        <label>Password<input id="password" name="password" type="password" autocomplete="current-password" required></label>
+        <p id="loginError" class="form-error" role="alert"></p>
+        <button class="button primary" type="submit">Secure sign in <span>→</span></button>
+      </form>
+      <p class="login-footnote">Access is role-based. Contact the portal administrator if you need an account.</p>
+    </section>
+  </main>
+
+  <div id="appView" class="app-view" hidden>
+    <header class="topbar">
+      <button id="openTools" class="map-menu-button" aria-label="Open map tools" aria-expanded="false">☰</button><div class="brand"><span class="brand-mark small">M</span><span><strong>MRDCL</strong><small>Household Survey Portal</small></span></div>
+      <div class="topbar-actions"><span id="userBadge" class="user-badge"></span><button id="installAppButton" class="text-button" hidden>Install app</button><button id="exportButton" class="text-button" hidden>Download data</button><button id="userAdminButton" class="text-button" hidden>Manage users</button><button id="logoutButton" class="text-button">Sign out</button></div>
+    </header>
+    <section class="workspace map-shell">
+      <aside class="tool-rail" aria-label="Map tools">
+        <button class="rail-button" data-tool="register" aria-label="Household register" title="Household register"><span>⌕</span></button>
+        <button class="rail-button" data-tool="layers" aria-label="Map layers" title="Map layers"><span>▱</span></button>
+        <button class="rail-button" data-tool="progress" aria-label="Survey progress" title="Survey progress"><span>▥</span></button>
+        <button class="rail-button" data-tool="activity" aria-label="Recent activity" title="Recent activity"><span>◷</span></button>
+        <button id="railAssignments" class="rail-button" data-tool="assignments" aria-label="Team management" title="Team management" hidden><span>♙</span></button>
+        <button id="railVerify" class="rail-button" data-tool="verify" aria-label="Verify and finalise" title="Verify and finalise" hidden><span>✓</span></button>
+        <button class="rail-button" data-tool="mywork" aria-label="My assigned work" title="My assigned work"><span>▤</span></button>
+        <button id="railExports" class="rail-button" data-tool="exports" aria-label="Download data" title="Download data" hidden><span>⇩</span></button>
+        <div class="rail-spacer"></div>
+        <button id="railUsers" class="rail-button" data-tool="users" aria-label="Manage users" title="Manage users" hidden><span>⚙</span></button>
+        <button class="rail-button" data-tool="profile" aria-label="My profile" title="My profile"><span>◉</span></button>
+      </aside>
+      <aside id="toolPanel" class="tool-panel" aria-label="Map tool panel" aria-hidden="true">
+        <header id="toolPanelHead" class="tool-panel-head"><div><p id="toolPanelEyebrow" class="eyebrow">MRDCL PORTAL</p><h2 id="toolPanelTitle">Household register</h2></div></header>
+        <div id="panelRegister" class="tool-view">
+        <div class="sidebar-heading"><div><p class="eyebrow">PROJECT REGISTER</p><h2>AS 589 households</h2></div><div class="sidebar-head-actions"><span id="datasetTotal" class="total-chip">—</span></div></div>
+        <div id="metrics" class="metrics" aria-label="Survey progress"></div>
+        <div class="filter-block">
+          <label class="search-label">Find a household<input id="searchInput" type="search" placeholder="ID, owner, contact, plot…"></label>
+          <div class="filter-grid native-filters">
+            <label>Status<select id="statusFilter"><option value="">All statuses</option><option>Not started</option><option>In progress</option><option>Completed</option><option>Verified</option></select></label>
+            <label>Team<select id="teamFilter"><option value="">All teams</option><option>Team 1</option><option>Team 2</option><option>Unassigned</option></select></label>
+          </div>
+          <button id="clearFilters" class="text-button filter-reset">Clear filters</button>
+        </div>
+        <div class="list-heading"><span>MAP RESULTS</span><span id="resultCount"></span></div>
+        <div id="householdList" class="household-list" aria-live="polite"></div>
+        <section class="activity-section"><div class="list-heading"><span>RECENT ACTIVITY</span></div><div id="activityList" class="activity-list"></div></section>
+        </div>
+        <div id="toolViewContent" class="tool-view" hidden aria-live="polite"></div>
+      </aside>
+      <button id="toolBackdrop" class="tool-backdrop" aria-label="Close tools" hidden></button>
+      <section class="map-stage">
+        <div id="map" aria-label="Interactive Phase 1 building map"></div>
+        <div class="map-actions"><button id="zoomBuildings" class="map-action">Survey area</button></div>
+        <div class="map-legend"><b>Phase 1 building layer</b><span><i class="legend-dot building"></i>All supplied buildings</span><span><i class="legend-dot buffer"></i>Musi River buffer</span><b>Survey status</b><span><i class="legend-dot not-started"></i>Not started</span><span><i class="legend-dot progress"></i>In progress</span><span><i class="legend-dot complete"></i>Completed</span><span><i class="legend-dot verified"></i>Verified</span></div>
+        <aside id="detailPanel" class="detail-panel" aria-live="polite">
+          <div id="emptyDetail" class="empty-detail"><div class="empty-icon">⌖</div><h2>Select a household</h2><p>Click a polygon on the map or a result in the register to view the household questionnaire.</p></div>
+          <div id="detailContent" hidden>
+            <div class="detail-head"><div><p id="detailStatus" class="status-pill">—</p><h2 id="detailTitle">Household</h2><p id="detailMeta" class="detail-meta"></p></div><div class="detail-actions"><button id="backToMap" class="mobile-back" type="button">← Map</button><button id="closeDetail" class="detail-close" type="button" aria-label="Close questionnaire">× Close</button></div></div>
+            <div id="saveNotice" class="save-notice" hidden></div>
+            <div id="mapDirections" class="map-directions" hidden></div>
+            <div class="detail-tabs"><button class="tab active" data-tab="questionnaire">Questionnaire</button><button class="tab" data-tab="record">Record</button><button id="photoTab" class="tab" data-tab="photos">Photos</button><button id="reviewTab" class="tab" data-tab="review" hidden>Review &amp; finalise</button></div>
+            <form id="questionnaireForm" class="questionnaire"></form>
+            <div id="recordTab" class="record-tab" hidden></div>
+            <section id="photoContent" class="photo-content" hidden></section>
+            <section id="adminReviewContent" class="admin-review" hidden></section>
+            <footer class="detail-footer"><p id="revisionNote">No saved changes yet.</p><button id="saveButton" class="button primary">Save changes</button></footer>
+          </div>
+        </aside>
+      </section>
+    </section>
+  </div>
+  <dialog id="userDialog" class="user-dialog">
+    <form id="userForm" method="dialog"><div class="dialog-head"><div><p class="eyebrow">ADMINISTRATION</p><h2>Create portal account</h2></div><button id="closeUserDialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <div class="dialog-fields"><label>Full name<input name="display_name" required></label><label>User ID<input name="username" pattern="[a-zA-Z0-9._-]{3,40}" required></label><label>Role<select name="role"><option value="editor">Editor — can update records</option><option value="authority">Authority — view only</option><option value="admin">Administrator — full access</option></select></label><label>Initial password<input name="password" type="password" minlength="10" required></label></div>
+      <p id="userError" class="form-error"></p><div class="dialog-actions"><button id="cancelUserDialog" class="button secondary" type="button">Cancel</button><button class="button primary" value="default">Create account</button></div>
+    </form>
+  </dialog>
+  <dialog id="exportDialog" class="user-dialog export-dialog">
+    <form method="dialog"><div class="dialog-head"><div><p class="eyebrow">CONTROLLED EXPORT</p><h2>Download survey data</h2></div><button id="closeExportDialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <p class="export-copy">Exports contain the current shared register, including questionnaire updates. Download only to approved MRDCL storage.</p>
+      <div class="export-actions"><button type="button" class="button secondary" data-export="geojson">GIS GeoJSON</button><button type="button" class="button secondary" data-export="kml">Google Earth KML</button><button type="button" class="button secondary" data-export="xlsx">Excel workbook</button><button type="button" class="button secondary" data-export="word">Word document</button><button type="button" class="button secondary" data-export="csv">CSV data</button></div>
+    </form>
+  </dialog>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/app.js?v=20"></script>
+</body>
+</html>
